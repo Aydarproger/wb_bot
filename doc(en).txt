@@ -1,0 +1,68 @@
+Here is a little bit of the terms of reference to give you a rough idea of what we expect
+
+
+Development of a bot with simulated human activity for redeeming products on WildBerries. The bot should
+Be able to:
+○ Search for products from a certain gender (male or female) at a certain time
+○ Search for products by a certain search query at a certain time
+○ Search for products by a requested category at a certain time
+○ Adding goods to cart from a mobile device, payment from a computer, for example
+○ Verification on WildBerries from different IP, phone numbers. Payment for goods on WildBerries from different cards. (1 redemption = 1 IP = 1 phone number)
+○ Transfer order data from WildBerries to another platform (Delivery date, delivery status, delivery amount, delivery address, shelf life, receipt code, registration number, QR code of receipt).
+○ Keep a record of your activities on WildBerries
+○ Leave questions about products at a certain time
+○ Leave likes on product comments at certain times
+○ Add products to favorites at a specific time
+○ Add products to favorites at a specific time
+○ Add items to cart at a specific time
+○ Leave reviews with specified text for products at a specific time ○ Leave reviews with specified text for products at a specific time
+○ Help our developer to integrate your bot to our Django project after successfully integrated project is done!
+
+Info about project:
+
+The base file as I understand it is register.py
+The file proxies.py finds free proxies from the list and checks them (the script works 24 by 7 and updates proxies.txt).
+Let's deal with the register.py file
+
+This is basically what the bot is for
+Let's say I'm a seller and sell my goods on wildberries, using our service I as a seller can buy my own products
+on someone else's behalf, while raising the statistics of my goods on wildberries.
+What the bot should be able to do:
+
+-Purchase goods
+-Kid to basket (the seller can also make up the number of items added to the basket)
+-Add my product to favourites
+-Write my product reviews
+-Add likes on reviews
+-Search products by keywords and purchase by them
+
+
+The process of purchasing goods
+First of all, a buyer places an order from our service For example, he wants his product named 1 to be bought 3 times.
+and from our service a request is sent to the regNew bot, which performs registration on the wildbrerries site.
+using a proxy while receiving a number
+from smsactivate service. The code from sms is sent to webhook which is further processed.
+RegNew returns us the session, which is stored in the database of the service (on our service) for further processing.
+Further process_buy is called which accepts this session and using proxy adds goods to the basket.
+After successfully adding goods to the basket we need to pay for them.
+To do this we need to take qr to top up the balance, so from our service after successful addition of goods to the basket. 
+is executed generate_qr which returns us qr and other data.
+
+Our paid money tops up the balance of the session and we try to redeem these goods using the session.
+Calls process_pay which should redeem the goods and send us the redemption data
+
+
+So far in our code all this works unstable because smsactivate sometimes does not send sms or we can not find proxy so
+code for session registration works unstable.
+
+It was decided to write a script that 24 by 7 will replenish the folder completed_sessions to not lose time on the 
+registration during the process and immediately take sessions from this folder when our service accesses regNew.
+At this point in the integration we stopped. 
+It was all about these two functions:
+
+1)Purchase items
+2)Throw in the basket (the seller can also screw up the number of items added to the basket).
+
+The second is process_cart suddenly if the buyer orders just to add his goods to the basket (without redemption).
+But I don't know if this process_cart is used in the 1st item too.
+As far as I understand there are no other functions yet.
